@@ -1,0 +1,29 @@
+@import '~antd/dist/antd.css';
+
+.App {
+	font-family: sans-serif;
+	text-align: center;
+}
+
+.Question {
+	text-align: left;
+	font-size: 1.2em;
+	margin: 30px;
+	padding-top: 20px;
+}
+
+.Button {
+	margin: 50px;
+	border: none transparent;
+	background: rgba(71, 188, 218, 0.842);
+	padding: 40px;
+	border-radius: 7px;
+}
+
+.Radio {
+	background: rgba(167, 166, 166, 0.842);
+	padding: 20px;
+	margin: 5px;
+	border-radius: 7px;
+	width: 100%;
+}
