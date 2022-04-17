@@ -2,6 +2,7 @@ import { Checkbox } from 'antd';
 import * as _ from 'lodash';
 import * as React from 'react';
 import { render } from 'react-dom';
+import { ProgressUpload } from './components/ProgressUpload';
 import { QuestionComponent } from './components/QuestionComponent';
 import { StatsComponent } from './components/StatsComponent';
 import { useLocalStorage } from './effects/useLocalStorage';
@@ -73,19 +74,20 @@ function App() {
 		'progress',
 		{}
 	);
+
 	return (
 		<div className="App">
 			<h1>{'Theoriefragen zum SBF Binnen & See'}</h1>
-			{`${Object.keys(questionCatalogue).length} questions`}
 			{selection}
+			<div>{`${Object.keys(questionCatalogue).length} questions`}</div>
 			<QuestionComponent questionsDict={questionCatalogue} progress={progress} setProgress={setProgress} />
-
 			<StatsComponent
 				progress={progress}
 				setProgress={setProgress}
 				catalogues={selectedQuestionCatalogues}
 				numberTotalQuestions={Object.keys(questionCatalogue).length}
 			/>
+			<ProgressUpload setProgress={setProgress} />
 		</div>
 	);
 }

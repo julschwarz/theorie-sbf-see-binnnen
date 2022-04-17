@@ -11,9 +11,6 @@ export function StatsComponent(props: {
 }) {
 	const { progress, setProgress, catalogues, numberTotalQuestions } = props;
 
-	// Processed Questions unfiltered
-	const indexesProcessedInAllCatalogues = Object.keys(process);
-
 	// Processed questions within selected catalogues:
 	const indexesProcessedInSelectedCatalogue = Object.keys(progress).filter((index) =>
 		catalogues.includes(index.replace(/[^/_]*[_]/, ''))
@@ -44,7 +41,7 @@ export function StatsComponent(props: {
 								'99%': 'limegreen',
 							}}
 							percent={round(
-								indexesProcessedInSelectedCatalogue.length / indexesProcessedInAllCatalogues.length,
+								(indexesProcessedInSelectedCatalogue.length / numberTotalQuestions) * 100,
 								2
 							)}
 						/>
@@ -75,7 +72,7 @@ export function StatsComponent(props: {
 								'60%': 'orange',
 								'99%': 'limegreen',
 							}}
-							percent={round(indexesProcessedInAllCatalogues.length / 466, 1)}
+							percent={round((Object.keys(progress).length / 466) * 100, 1)}
 						/>
 					}
 				</Col>
@@ -89,7 +86,7 @@ export function StatsComponent(props: {
 					{Object.values(progress).filter((value) => value.rightCount >= 3).length} Fragen mindestens 3x
 					richtig
 				</Col>
-				<Col flex={3}> {Object.keys(process).length} / 466</Col>
+				<Col flex={3}> {Object.keys(progress).length} / 466</Col>
 			</Row>
 		</div>
 	);

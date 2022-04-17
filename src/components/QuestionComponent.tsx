@@ -1,5 +1,5 @@
 import { Button, Radio, Space } from 'antd';
-import { shuffle } from 'lodash';
+import _, { shuffle } from 'lodash';
 import * as React from 'react';
 import { useLocalStorage } from '../effects/useLocalStorage';
 import '../styles.css';
@@ -8,9 +8,30 @@ import { Image, Question, Response } from '../types';
 function ImageComponent(props: Image) {
 	return (
 		<a key={props.title} href={props.src} target={props.src}>
-			<img height={150} src={props.src} />
+			<img className="Image" src={props.src} />
 		</a>
 	);
+}
+
+function getNextQuestionId(
+	availableQuestionIds: string[],
+	progress: Record<string, { rightCount: number; wrongCount: number }>
+): string {
+	let nextQuestion = { index: availableQuestionIds[0], memorizationLevel: 10000 };
+
+	for (const id of _.shuffle(availableQuestionIds)) {
+		// if the id is not yet in progress and thus hasn't been seen by the user, return this question id
+		if (!progress[id]) return id;
+
+		// else find the question with the lowest memorization level,
+		// if a question is answered right it has a higher memorization Level (x 2). Therefore accounts double to the memorizationLevel
+		const memorizationLevel = progress[id].rightCount * 2 + progress[id].wrongCount;
+		if (memorizationLevel < nextQuestion.memorizationLevel) {
+			nextQuestion = { index: id, memorizationLevel };
+		}
+	}
+	// if all questions were answered at least once then return the one that has the lowest memorizationLevel
+	return nextQuestion.index;
 }
 
 function getQuestionProgress(
@@ -20,12 +41,19 @@ function getQuestionProgress(
 	return progress ? { ...question, ...progress } : question;
 }
 
-export function QuestionComponent(props: { questionsDict: Record<string, Question>; progress: any; setProgress: any }) {
+export function QuestionComponent(props: {
+	questionsDict: Record<string, Question>;
+	progress: Record<string, { rightCount: number; wrongCount: number }>;
+	setProgress: any;
+}) {
 	const { questionsDict, progress, setProgress } = props;
 	const [pastQuestionsIdList, setPastQuestionsIdList] = useLocalStorage<string[]>('answeredQuestions', []);
 	const [selectedResponse, setSelectedResponse] = React.useState<Response | null>(null);
+	// const [onlyWronglyAnsweredMode, setOnlyWronglyAnsweredMode] = React.useState(false);
 	const [currentQuestion, setQuestion] = React.useState<Question>(
-		pastQuestionsIdList.length == 0? getQuestionProgress(questionsDict['0_Basis_Binnen'], progress['0_Basis_Binnen']): getQuestionProgress(questionsDict[pastQuestionsIdList[pastQuestionsIdList.length - 1]],progress[pastQuestionsIdList[pastQuestionsIdList.length - 1]])
+		pastQuestionsIdList.length == 0
+			? getQuestionProgress(questionsDict['0_Basis_Binnen'], progress['0_Basis_Binnen'])
+			: getQuestionProgress(questionsDict[pastQuestionsIdList.pop()!], progress[pastQuestionsIdList.pop()!])
 	);
 
 	const responses = React.useMemo(() => {
@@ -50,27 +78,25 @@ export function QuestionComponent(props: { questionsDict: Record<string, Questio
 	}, [selectedResponse, currentQuestion]);
 
 	const goToNextQuestion = React.useCallback(() => {
-		const allIndexes = Object.keys(questionsDict);
-		const randomInt = Math.floor(Math.random() * allIndexes.length);
-		const nextRandomQuestionId = allIndexes[randomInt];
-		const nextRandomQuestion = questionsDict[nextRandomQuestionId];
-
-		// save last question in processed quere:
+		// save last question in processed queue:
 		setPastQuestionsIdList([...pastQuestionsIdList, currentQuestion.id]);
 
 		// save stats to progess:
-		const updatedCounts = { rightCount: currentQuestion.rightCount, wrongCount: currentQuestion.wrongCount };
-		setProgress({
+		const newProgress = {
 			...progress,
-			[currentQuestion.id]: updatedCounts,
-		});
-		console.log('Saved question to progress:' + JSON.stringify(progress));
+			[currentQuestion.id]: { rightCount: currentQuestion.rightCount, wrongCount: currentQuestion.wrongCount },
+		};
+		setProgress(newProgress);
+		console.log('Saved question to progress:' + JSON.stringify(newProgress));
 
-		// now set new question as current question and undo response
-		const nextQuestionProgress =
-			nextRandomQuestionId in Object.keys(progress)
-				? progress[nextRandomQuestionId]
-				: { rightCount: 0, wrongCount: 0 };
+		// now find next question, set it as current question and undo response
+		const nextQuestionId = getNextQuestionId(Object.keys(questionsDict), newProgress);
+		console.log('selected id' + nextQuestionId);
+		const nextRandomQuestion = questionsDict[nextQuestionId];
+
+		const nextQuestionProgress = newProgress[nextQuestionId]
+			? newProgress[nextQuestionId]
+			: { rightCount: 0, wrongCount: 0 };
 
 		setQuestion({
 			...nextRandomQuestion,
@@ -78,7 +104,7 @@ export function QuestionComponent(props: { questionsDict: Record<string, Questio
 			responses: shuffle(nextRandomQuestion.responses),
 		});
 		setSelectedResponse(null);
-		console.log('Set next question: ' + JSON.stringify(questionsDict[nextRandomQuestionId].question));
+		console.log('Set next question: ' + JSON.stringify(questionsDict[nextQuestionId].question));
 	}, [
 		currentQuestion,
 		questionsDict,
@@ -103,7 +129,12 @@ export function QuestionComponent(props: { questionsDict: Record<string, Questio
 
 	return (
 		<div>
+			{/* <Checkbox onChange={(e) => setOnlyWronglyAnsweredMode(e.target.value)}>
+				Nur falsch beantwortete Fragen
+			</Checkbox> */}
+			<br />
 			{currentQuestion.images.map((image) => ImageComponent(image))}
+
 			<div className="Question">{currentQuestion.question}</div>
 			<Radio.Group
 				disabled={selectedResponse != null}
