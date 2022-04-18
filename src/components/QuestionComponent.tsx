@@ -25,7 +25,7 @@ function getNextQuestionId(
 
 		// else find the question with the lowest memorization level,
 		// if a question is answered right it has a higher memorization Level (x 2). Therefore accounts double to the memorizationLevel
-		const memorizationLevel = progress[id].rightCount * 2 + progress[id].wrongCount;
+		const memorizationLevel = progress[id].rightCount * 2 - progress[id].wrongCount;
 		if (memorizationLevel < nextQuestion.memorizationLevel) {
 			nextQuestion = { index: id, memorizationLevel };
 		}

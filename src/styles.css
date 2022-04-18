@@ -20,16 +20,22 @@
 
 .Button {
 	margin: 50px;
+	display: inline-flex;
+	align-items: center;
 	border: none transparent;
 	background: rgba(71, 188, 218, 0.842);
-	padding: 40px;
+	padding: 2em 4em;
+	font-size: 1.2em;
 	border-radius: 7px;
 }
 
 .Radio {
-	background: rgba(167, 166, 166, 0.842);
+	background: rgba(255, 255, 255, 0.842);
 	padding: 20px;
 	margin: 5px;
 	border-radius: 7px;
+	border-style: 'solid';
+	border-color: rgba(71, 188, 218, 0.842);
+	border-width: 40px;
 	width: 100%;
 }
