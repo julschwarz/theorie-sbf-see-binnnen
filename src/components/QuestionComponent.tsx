@@ -50,13 +50,14 @@ export function QuestionComponent(props: {
 	const [pastQuestionsIdList, setPastQuestionsIdList] = useLocalStorage<string[]>('answeredQuestions', []);
 	const [selectedResponse, setSelectedResponse] = React.useState<Response | null>(null);
 	// const [onlyWronglyAnsweredMode, setOnlyWronglyAnsweredMode] = React.useState(false);
+	const lastSavedQuestionId =
+		pastQuestionsIdList.length == 0 ? '0_Basis_Binnen' : pastQuestionsIdList[pastQuestionsIdList.length - 1];
 	const [currentQuestion, setQuestion] = React.useState<Question>(
-		pastQuestionsIdList.length == 0
-			? getQuestionProgress(questionsDict['0_Basis_Binnen'], progress['0_Basis_Binnen'])
-			: getQuestionProgress(questionsDict[pastQuestionsIdList.pop()!], progress[pastQuestionsIdList.pop()!])
+		getQuestionProgress(questionsDict[lastSavedQuestionId], progress[lastSavedQuestionId])
 	);
 
 	const responses = React.useMemo(() => {
+		if (!currentQuestion) return;
 		return currentQuestion.responses.map((response) => (
 			<Radio
 				style={{
@@ -80,7 +81,7 @@ export function QuestionComponent(props: {
 	const goToNextQuestion = React.useCallback(() => {
 		// save last question in processed queue:
 		setPastQuestionsIdList([...pastQuestionsIdList, currentQuestion.id]);
-
+		console.log([...pastQuestionsIdList, currentQuestion.id]);
 		// save stats to progess:
 		const newProgress = {
 			...progress,
@@ -91,12 +92,9 @@ export function QuestionComponent(props: {
 
 		// now find next question, set it as current question and undo response
 		const nextQuestionId = getNextQuestionId(Object.keys(questionsDict), newProgress);
-		console.log('selected id' + nextQuestionId);
 		const nextRandomQuestion = questionsDict[nextQuestionId];
 
-		const nextQuestionProgress = newProgress[nextQuestionId]
-			? newProgress[nextQuestionId]
-			: { rightCount: 0, wrongCount: 0 };
+		const nextQuestionProgress = getQuestionProgress(questionsDict[nextQuestionId], newProgress[nextQuestionId]);
 
 		setQuestion({
 			...nextRandomQuestion,
@@ -116,10 +114,11 @@ export function QuestionComponent(props: {
 	]);
 
 	const goToLastQuestion = React.useCallback(() => {
-		if (pastQuestionsIdList.length == 1) return;
-
-		// else set last question as current question and undo response
+		// set last question as current question and undo response
 		const lastQuestionId = pastQuestionsIdList[pastQuestionsIdList.length - 1];
+		console.log(pastQuestionsIdList);
+		if (!lastQuestionId) return;
+		console.log('a');
 		setQuestion(getQuestionProgress(questionsDict[lastQuestionId], progress[lastQuestionId]));
 		setSelectedResponse(null);
 
