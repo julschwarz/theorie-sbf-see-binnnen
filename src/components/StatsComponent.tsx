@@ -50,15 +50,20 @@ export function StatsComponent(props: {
 				<Col flex={3}>
 					<Statistic
 						title="Correct once"
-						value={Object.values(progress).filter((value) => value.rightCount > 0).length}
+						value={
+							Object.values(indexesProcessedInSelectedCatalogue).filter(
+								(id) => progress[id] && progress[id].rightCount > 0
+							).length
+						}
 						prefix={<LikeOutlined />}
 					/>
 
 					<Statistic
 						title="Never answered right"
 						value={
-							Object.values(progress).filter((value) => value.wrongCount > 0 && value.rightCount == 0)
-								.length
+							Object.values(indexesProcessedInSelectedCatalogue).filter(
+								(id) => progress[id] && progress[id].wrongCount > 0 && progress[id].rightCount == 0
+							).length
 						}
 						prefix={<DislikeOutlined />}
 					/>
