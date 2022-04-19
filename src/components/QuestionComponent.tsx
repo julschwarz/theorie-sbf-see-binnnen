@@ -7,7 +7,7 @@ import { Image, Question, Response } from '../types';
 
 function ImageComponent(props: Image) {
 	return (
-		<a key={props.title} href={props.src} target={props.src}>
+		<a key={props.src} href={props.src} target={props.src}>
 			<img className="Image" src={props.src} />
 		</a>
 	);
