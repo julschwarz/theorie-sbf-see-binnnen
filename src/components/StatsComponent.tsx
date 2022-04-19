@@ -86,6 +86,9 @@ export function StatsComponent(props: {
 				<Col flex={3}>
 					{catalogues.length != 0 &&
 						catalogues.reduce((prev, cur) => prev.replace('_', ' ') + ', ' + cur.replace('_', ' '))}
+					<div>
+						{indexesProcessedInSelectedCatalogue.length} / {numberTotalQuestions}
+					</div>
 				</Col>
 				<Col flex={3}>
 					{Object.values(progress).filter((value) => value.rightCount >= 3).length} Fragen mindestens 3x
