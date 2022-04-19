@@ -15,7 +15,8 @@ function ImageComponent(props: Image) {
 
 function getNextQuestionId(
 	availableQuestionIds: string[],
-	progress: Record<string, { rightCount: number; wrongCount: number }>
+	progress: Record<string, { rightCount: number; wrongCount: number }>,
+	recentQuestionIds: string[]
 ): string {
 	let nextQuestion = { index: availableQuestionIds[0], memorizationLevel: 10000 };
 
@@ -23,10 +24,10 @@ function getNextQuestionId(
 		// if the id is not yet in progress and thus hasn't been seen by the user, return this question id
 		if (!progress[id]) return id;
 
-		// else find the question with the lowest memorization level,
+		// else find the question with the lowest memorization level
 		// if a question is answered right it has a higher memorization Level (x 2). Therefore accounts double to the memorizationLevel
 		const memorizationLevel = progress[id].rightCount * 2 - progress[id].wrongCount;
-		if (memorizationLevel < nextQuestion.memorizationLevel) {
+		if (memorizationLevel < nextQuestion.memorizationLevel && !recentQuestionIds.includes(id)) {
 			nextQuestion = { index: id, memorizationLevel };
 		}
 	}
@@ -92,7 +93,11 @@ export function QuestionComponent(props: {
 		console.log('Saved question to progress:' + JSON.stringify(newProgress));
 
 		// now find next question, set it as current question and undo response
-		const nextQuestionId = getNextQuestionId(Object.keys(questionsDict), newProgress);
+		const nextQuestionId = getNextQuestionId(
+			Object.keys(questionsDict),
+			newProgress,
+			pastQuestionsIdList.slice(-5, -1)
+		);
 		const nextRandomQuestion = questionsDict[nextQuestionId];
 
 		const nextQuestionProgress = getQuestionProgress(questionsDict[nextQuestionId], newProgress[nextQuestionId]);
