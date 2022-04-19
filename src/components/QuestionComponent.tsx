@@ -31,6 +31,7 @@ function getNextQuestionId(
 		}
 	}
 	// if all questions were answered at least once then return the one that has the lowest memorizationLevel
+	console.log('lowest memorization level: ' + nextQuestion.memorizationLevel);
 	return nextQuestion.index;
 }
 
