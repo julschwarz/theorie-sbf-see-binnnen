@@ -82,8 +82,9 @@ export function QuestionComponent(props: {
 
 	const goToNextQuestion = React.useCallback(() => {
 		// save last question in processed queue:
-		setPastQuestionsIdList([...pastQuestionsIdList, currentQuestion.id]);
-		console.log([...pastQuestionsIdList, currentQuestion.id]);
+		const newPastQuestionIdList = [...pastQuestionsIdList, currentQuestion.id];
+		setPastQuestionsIdList(newPastQuestionIdList);
+
 		// save stats to progess:
 		const newProgress = {
 			...progress,
@@ -96,7 +97,7 @@ export function QuestionComponent(props: {
 		const nextQuestionId = getNextQuestionId(
 			Object.keys(questionsDict),
 			newProgress,
-			pastQuestionsIdList.slice(-5, -1)
+			newPastQuestionIdList.slice(-5)
 		);
 		const nextRandomQuestion = questionsDict[nextQuestionId];
 
