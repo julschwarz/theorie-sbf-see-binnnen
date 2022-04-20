@@ -1,6 +1,6 @@
 import { DislikeOutlined, LikeOutlined } from '@ant-design/icons';
 import { Col, Progress, Row, Statistic } from 'antd';
-import { round } from 'lodash';
+import _, { round } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import '../styles.css';
 export function StatsComponent(props: {
@@ -11,10 +11,26 @@ export function StatsComponent(props: {
 }) {
 	const { progress, setProgress, catalogues, numberTotalQuestions } = props;
 
-	// Processed questions within selected catalogues:
-	const indexesProcessedInSelectedCatalogue = Object.keys(progress).filter((index) =>
+	const answersInSelectedCatalogue = Object.entries(progress).filter(([index, counts]) =>
 		catalogues.includes(index.replace(/[^/_]*[_]/, ''))
 	);
+	// every question equals its fraction from total number of questions.
+	// If it has been answered once right -> 100 %, once right once wrong => 50%
+	const catalogueMemorizationPercent =
+		_.sum(
+			answersInSelectedCatalogue.map(([index, count]) => count.rightCount / (count.rightCount + count.wrongCount))
+		) / numberTotalQuestions;
+
+	// Processed questions within selected catalogues:
+	const indexesProcessedInSelectedCatalogue = answersInSelectedCatalogue.map((a) => a[0]);
+
+	const selectedProgress = _.zipObject(
+		indexesProcessedInSelectedCatalogue,
+		answersInSelectedCatalogue.map((a) => a[1])
+	);
+
+	// Alle mindestens einmal richtig oder doppelt so oft richtig wie falsch beantwortet
+
 	const [noAnsweredQuestions, setNoAnsweredQuestions] = useState(indexesProcessedInSelectedCatalogue.length);
 
 	useEffect(() => {
@@ -27,7 +43,7 @@ export function StatsComponent(props: {
 				<Col flex={3}>
 					<div>Fortschritt in den ausgewählten Fragenkatalogen</div>
 				</Col>
-				<Col flex={4}>Richtig / Falsch</Col>
+				<Col flex={4}>{round(catalogueMemorizationPercent * 100)} %</Col>
 				<Col flex={4}>Total</Col>
 			</Row>
 			<Row>
@@ -91,8 +107,8 @@ export function StatsComponent(props: {
 					</div>
 				</Col>
 				<Col flex={3}>
-					{Object.values(progress).filter((value) => value.rightCount >= 3).length} Fragen mindestens 3x
-					richtig
+					{Object.values(selectedProgress).filter((value) => value.rightCount >= 3).length} Fragen mindestens
+					3x richtig
 				</Col>
 				<Col flex={3}> {Object.keys(progress).length} / 466</Col>
 			</Row>

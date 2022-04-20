@@ -13,8 +13,11 @@
 }
 
 .Image {
-	height: 20%;
-	width: 30%;
+	width: 100%;
+	max-width: 250px;
+	height: 130px;
+	object-fit: contain;
+	object-position: bottom;
 	padding-top: 20px;
 }
 

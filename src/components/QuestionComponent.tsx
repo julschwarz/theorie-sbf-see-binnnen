@@ -68,8 +68,8 @@ export function QuestionComponent(props: {
 							? 'green'
 							: response.text == selectedResponse.text
 							? 'red'
-							: 'grey'
-						: 'grey',
+							: 'lightgrey'
+						: 'lightgrey',
 				}}
 				className="Radio"
 				value={response}
@@ -97,7 +97,7 @@ export function QuestionComponent(props: {
 		const nextQuestionId = getNextQuestionId(
 			Object.keys(questionsDict),
 			newProgress,
-			newPastQuestionIdList.slice(-5)
+			newPastQuestionIdList.slice(-10)
 		);
 		const nextRandomQuestion = questionsDict[nextQuestionId];
 
@@ -139,6 +139,7 @@ export function QuestionComponent(props: {
 				Nur falsch beantwortete Fragen
 			</Checkbox> */}
 			<br />
+
 			{currentQuestion.images.map((image) => ImageComponent(image))}
 
 			<div className="Question">{currentQuestion.question}</div>
