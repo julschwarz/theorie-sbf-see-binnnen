@@ -22,9 +22,8 @@
 }
 
 .Button {
-	margin: 50px;
-	display: inline-flex;
-	align-items: center;
+	margin: 3% 5%;
+	width: 40%;
 	border: none transparent;
 	background: rgba(71, 188, 218, 0.842);
 	padding: 2em 4em;
