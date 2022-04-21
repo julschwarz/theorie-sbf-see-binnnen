@@ -22,11 +22,10 @@
 }
 
 .Button {
-	margin: 3% 5%;
-	width: 40%;
+	margin: 3% 2%;
+	width: 50%;
 	border: none transparent;
 	background: rgba(71, 188, 218, 0.842);
-	padding: 2em 4em;
 	font-size: 1.2em;
 	border-radius: 7px;
 }
@@ -54,4 +53,13 @@
 	width: 100px;
 	height: 100px;
 	margin: auto;
+}
+
+
+.StatsContainer {
+	display: flex;
+	row-gap: 10px;
+	column-gap: 20px;
+	flex-wrap: wrap;
+	justify-content: space-around;
 }

@@ -11,7 +11,7 @@ import { Question } from './types';
 
 function App() {
 	const [selectedQuestionCatalogues, setSelectedQuestionCatalogues] = useLocalStorage<string[]>('catalogues', [
-		'Basis_Binnen',
+		'Basis',
 	]);
 
 	function listToDict(list: Question[]) {
@@ -34,9 +34,9 @@ function App() {
 	);
 
 	const options = [
-		{ label: 'Basis', value: 'Basis_Binnen' },
-		{ label: 'Binnen Spezifisch', value: 'Spezifisch_Binnen' },
-		{ label: 'See Spezifisch', value: 'Spezifisch_See' },
+		{ label: 'Basis', value: 'Basis' },
+		{ label: 'Binnen Spezifisch', value: 'Binnen_Spezifisch' },
+		{ label: 'See Spezifisch', value: 'See_Spezifisch' },
 	];
 
 	React.useEffect(() => {

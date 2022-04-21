@@ -53,7 +53,7 @@ export function QuestionComponent(props: {
 	const [selectedResponse, setSelectedResponse] = React.useState<Response | null>(null);
 	// const [onlyWronglyAnsweredMode, setOnlyWronglyAnsweredMode] = React.useState(false);
 	const lastSavedQuestionId =
-		pastQuestionsIdList.length == 0 ? '0_Basis_Binnen' : pastQuestionsIdList[pastQuestionsIdList.length - 1];
+		pastQuestionsIdList.length == 0 ? '0_Basis' : pastQuestionsIdList[pastQuestionsIdList.length - 1];
 	const [currentQuestion, setQuestion] = React.useState<Question>(
 		getQuestionProgress(questionsDict[lastSavedQuestionId], progress[lastSavedQuestionId])
 	);

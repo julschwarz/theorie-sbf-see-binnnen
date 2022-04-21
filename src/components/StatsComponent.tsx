@@ -39,10 +39,12 @@ export function StatsComponent(props: {
 
 	return (
 		<div>
-			<div>
-				{catalogues.length != 0 &&
-					catalogues.reduce((prev, cur) => prev.replace('_', ' ') + ', ' + cur.replace('_', ' '))}
-			</div>
+			<h2>
+				{`Lernfortschritt in den Katalogen ${
+					catalogues.length != 0 &&
+					catalogues.reduce((prev, cur) => prev.replace('_', ' ') + ', ' + cur.replace('_', ' '))
+				}`}
+			</h2>
 			<br />
 			<div className={'StatsContainer'}>
 				<Card title={`Jede Frage beantwortet`} bordered={false}>

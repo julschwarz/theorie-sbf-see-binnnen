@@ -34,19 +34,13 @@ export function ProgressUpload(props: { setProgress: any }) {
 	};
 
 	return (
-		<div>
-			<TextArea
-				style={{
-					padding: '30px 300px',
-				}}
-				showCount
-				defaultValue="{}"
-				onChange={checkInput}
-				status={valid ? '' : 'error'}
-			/>
-			<Button disabled={!valid} onClick={uploadNewProgress} type="primary">
-				Update current progress
-			</Button>
+		<div className="StatsContainer">
+			<div>
+				<TextArea showCount defaultValue="{}" onChange={checkInput} status={valid ? '' : 'error'} />
+				<Button disabled={!valid} onClick={uploadNewProgress} type="primary">
+					Update current progress
+				</Button>
+			</div>
 		</div>
 	);
 }
