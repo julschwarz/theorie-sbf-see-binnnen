@@ -1,5 +1,5 @@
 import { DislikeOutlined, LikeOutlined } from '@ant-design/icons';
-import { Col, Progress, Row, Statistic } from 'antd';
+import { Card, Progress, Statistic } from 'antd';
 import _, { round } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import '../styles.css';
@@ -39,15 +39,13 @@ export function StatsComponent(props: {
 
 	return (
 		<div>
-			<Row>
-				<Col flex={3}>
-					<div>Fortschritt in den ausgewählten Fragenkatalogen</div>
-				</Col>
-				<Col flex={4}>{round(catalogueMemorizationPercent * 100)} %</Col>
-				<Col flex={4}>Total</Col>
-			</Row>
-			<Row>
-				<Col flex={3}>
+			<div>
+				{catalogues.length != 0 &&
+					catalogues.reduce((prev, cur) => prev.replace('_', ' ') + ', ' + cur.replace('_', ' '))}
+			</div>
+			<br />
+			<div className={'StatsContainer'}>
+				<Card title={`Jede Frage beantwortet`} bordered={false}>
 					{
 						<Progress
 							type="circle"
@@ -58,24 +56,18 @@ export function StatsComponent(props: {
 							}}
 							percent={round(
 								(indexesProcessedInSelectedCatalogue.length / numberTotalQuestions) * 100,
-								2
+								1
 							)}
 						/>
 					}
-				</Col>
-				<Col flex={3}>
-					<Statistic
-						title="Correct once"
-						value={
-							Object.values(indexesProcessedInSelectedCatalogue).filter(
-								(id) => progress[id] && progress[id].rightCount > 0
-							).length
-						}
-						prefix={<LikeOutlined />}
-					/>
+					<div>
+						{indexesProcessedInSelectedCatalogue.length} / {numberTotalQuestions}
+					</div>
+				</Card>
 
+				<Card title="Anzahl richtig/falsch beantworteter Fragen" bordered={false}>
 					<Statistic
-						title="Never answered right"
+						title="Falsch beantwortete Fragen"
 						value={
 							Object.values(indexesProcessedInSelectedCatalogue).filter(
 								(id) => progress[id] && progress[id].wrongCount > 0 && progress[id].rightCount == 0
@@ -83,8 +75,52 @@ export function StatsComponent(props: {
 						}
 						prefix={<DislikeOutlined />}
 					/>
-				</Col>
-				<Col flex={3}>
+
+					<Statistic
+						title="Richtig beantwortete Fragen"
+						value={
+							Object.values(indexesProcessedInSelectedCatalogue).filter(
+								(id) => progress[id] && progress[id].rightCount > 0
+							).length
+						}
+						prefix={
+							<div>
+								1x
+								<LikeOutlined />
+							</div>
+						}
+					/>
+
+					<Statistic
+						value={
+							Object.values(indexesProcessedInSelectedCatalogue).filter(
+								(id) => progress[id] && progress[id].rightCount > 2
+							).length
+						}
+						prefix={
+							<div>
+								2x
+								<LikeOutlined />
+							</div>
+						}
+					/>
+
+					<Statistic
+						value={
+							Object.values(indexesProcessedInSelectedCatalogue).filter(
+								(id) => progress[id] && progress[id].rightCount > 3
+							).length
+						}
+						prefix={
+							<div>
+								3x
+								<LikeOutlined />
+							</div>
+						}
+					/>
+				</Card>
+
+				<Card title="Allgemeiner Fortschritt" bordered={false}>
 					{
 						<Progress
 							type="circle"
@@ -93,25 +129,12 @@ export function StatsComponent(props: {
 								'60%': 'orange',
 								'99%': 'limegreen',
 							}}
-							percent={round((Object.keys(progress).length / 466) * 100, 1)}
+							percent={round(catalogueMemorizationPercent * 100, 1)}
 						/>
 					}
-				</Col>
-			</Row>
-			<Row>
-				<Col flex={3}>
-					{catalogues.length != 0 &&
-						catalogues.reduce((prev, cur) => prev.replace('_', ' ') + ', ' + cur.replace('_', ' '))}
-					<div>
-						{indexesProcessedInSelectedCatalogue.length} / {numberTotalQuestions}
-					</div>
-				</Col>
-				<Col flex={3}>
-					{Object.values(selectedProgress).filter((value) => value.rightCount >= 3).length} Fragen mindestens
-					3x richtig
-				</Col>
-				<Col flex={3}> {Object.keys(progress).length} / 466</Col>
-			</Row>
+					<div>{`Du bestehst die Prüfung zu ${round(catalogueMemorizationPercent * 100)}%`}</div>
+				</Card>
+			</div>
 		</div>
 	);
 }
