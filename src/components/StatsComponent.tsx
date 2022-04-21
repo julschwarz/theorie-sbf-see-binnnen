@@ -39,8 +39,9 @@ export function StatsComponent(props: {
 
 	return (
 		<div>
+			<br />
 			<h2>
-				{`Lernfortschritt in den Katalogen ${
+				{`Lernstatistik für die Kataloge ${
 					catalogues.length != 0 &&
 					catalogues.reduce((prev, cur) => prev.replace('_', ' ') + ', ' + cur.replace('_', ' '))
 				}`}
@@ -122,7 +123,7 @@ export function StatsComponent(props: {
 					/>
 				</Card>
 
-				<Card title="Allgemeiner Fortschritt" bordered={false}>
+				<Card title="Lernfortschritt" bordered={false}>
 					{
 						<Progress
 							type="circle"

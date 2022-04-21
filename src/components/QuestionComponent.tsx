@@ -50,7 +50,7 @@ export function QuestionComponent(props: {
 }) {
 	const { questionsDict, progress, setProgress } = props;
 	const [pastQuestionsIdList, setPastQuestionsIdList] = useLocalStorage<string[]>('answeredQuestions', []);
-	const [selectedResponse, setSelectedResponse] = React.useState<Response | null>(null);
+	const [selectedResponse, setSelectedResponse] = React.useState<Response | undefined>(undefined);
 	// const [onlyWronglyAnsweredMode, setOnlyWronglyAnsweredMode] = React.useState(false);
 	const lastSavedQuestionId =
 		pastQuestionsIdList.length == 0 ? '0_Basis' : pastQuestionsIdList[pastQuestionsIdList.length - 1];
@@ -108,7 +108,7 @@ export function QuestionComponent(props: {
 			...nextQuestionProgress,
 			responses: shuffle(nextRandomQuestion.responses),
 		});
-		setSelectedResponse(null);
+		setSelectedResponse(undefined);
 		console.log('Set next question: ' + JSON.stringify(questionsDict[nextQuestionId].question));
 	}, [
 		currentQuestion,
@@ -127,8 +127,7 @@ export function QuestionComponent(props: {
 		if (!lastQuestionId) return;
 		console.log('a');
 		setQuestion(getQuestionProgress(questionsDict[lastQuestionId], progress[lastQuestionId]));
-		setSelectedResponse(null);
-
+		setSelectedResponse(questionsDict[lastQuestionId].responses.find((res) => res.correct == true));
 		// remove last question again from pastQuestionsIdList
 		setPastQuestionsIdList(pastQuestionsIdList.slice(0, -1));
 	}, [setPastQuestionsIdList, pastQuestionsIdList, questionsDict, progress]);
