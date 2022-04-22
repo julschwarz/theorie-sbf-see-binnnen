@@ -125,7 +125,6 @@ export function QuestionComponent(props: {
 		const lastQuestionId = pastQuestionsIdList[pastQuestionsIdList.length - 1];
 		console.log(pastQuestionsIdList);
 		if (!lastQuestionId) return;
-		console.log('a');
 		setQuestion(getQuestionProgress(questionsDict[lastQuestionId], progress[lastQuestionId]));
 		setSelectedResponse(questionsDict[lastQuestionId].responses.find((res) => res.correct == true));
 		// remove last question again from pastQuestionsIdList
