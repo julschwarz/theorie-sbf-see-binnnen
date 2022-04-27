@@ -171,7 +171,12 @@ export function QuestionComponent(props: {
 			{
 				<span style={{ display: 'flex' }}>
 					{' '}
-					<Button className="Button" onClick={() => goToLastQuestion()} type="primary">
+					<Button
+						className="Button"
+						disabled={pastQuestionsIdList.length == 0}
+						onClick={() => goToLastQuestion()}
+						type="primary"
+					>
 						Previous Question
 					</Button>
 					<Button
