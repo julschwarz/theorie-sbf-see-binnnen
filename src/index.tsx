@@ -37,6 +37,7 @@ function App() {
 		{ label: 'Basis', value: 'Basis' },
 		{ label: 'Binnen Spezifisch', value: 'Binnen_Spezifisch' },
 		{ label: 'See Spezifisch', value: 'See_Spezifisch' },
+		{ label: 'Binnen_Segel', value: 'Binnen_Segel_Spezifisch' },
 	];
 
 	React.useEffect(() => {
